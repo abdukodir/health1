@@ -194,36 +194,14 @@ class MyMQTTClass:
 
 @thread
 def condition(_app):
-    var1 = 'High blood pressure'
-    var2 = 'Low Blood Pressure'
+    var1 = 'Heart rate above'
+    var2 = 'Heart rate below'
     var3 = 'High blood pressure'
     var4 = 'Low Blood Pressure'
     var5 = 'high body temperature'
     var6 = 'Low body temperature'
     var7 = 'You are normal'
     while True:
-        heart = int(readData('heart.txt'))
-        if heart < 65:
-            _app.val_show_result1.set(var1)
-        elif heart > 85:
-            _app.val_show_result1.set(var2)
-        else: _app.val_show_result1.set('Your heart is normal')
-
-        pressure1 = int(readData('pressure.txt')[0:3])
-        pressure2 = int(readData('pressure.txt')[4:6])
-        if pressure1 > 139 and pressure2 > 89:
-            _app.val_show_result2.set(var3)
-        elif pressure1 < 130:
-            _app.val_show_result2.set(var4)
-        else:
-            _app.val_show_result2.set(var7)
-
-        temp = int(readData('temp.txt'))
-        if temp > 37.5:
-            _app.val_show_result3.set(var5)
-        if temp < 37:
-            _app.val_show_result3.set(var6)
-
         _app.val_show_heart.set(readData('heart.txt'))
         _app.val_show_pressure.set(readData('pressure.txt'))
         _app.val_show_temp.set(readData('temp.txt'))
@@ -231,6 +209,32 @@ def condition(_app):
         _app.val_show_weight.set(readData('weight.txt'))
         _app.val_show_height.set(readData('height.txt'))
         _app.val_show_bmi.set(readData('bmi.txt'))
+
+        heart = float(readData('heart.txt'))
+        if heart < 65:
+            _app.val_show_result1.set(var2)
+        elif heart > 85:
+            _app.val_show_result1.set(var1)
+        else:
+            _app.val_show_result1.set('Your heart is normal')
+
+        pressure1 = float(readData('pressure.txt')[0:3])
+        pressure2 = float(readData('pressure.txt')[4:6])
+        if pressure1 > 139 and pressure2 > 89:
+            _app.val_show_result2.set(var3)
+        elif pressure1 < 130:
+            _app.val_show_result2.set(var4)
+        else:
+            _app.val_show_result2.set(var7)
+
+        temp = float(readData('temp.txt'))
+        if temp > 37.5:
+            _app.val_show_result3.set(var5)
+        if temp < 37:
+            _app.val_show_result3.set(var6)
+        else:
+            _app.val_show_result3.set('Body Temperature is normal')
+
         sleep(1)
 
 if __name__ == '__main__':
