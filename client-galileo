@@ -1,0 +1,106 @@
+from __future__ import print_function
+
+import time
+import random
+import pyupm_i2clcd as lcd
+import pyupm_grove as grove
+import sys
+import mraa
+try:
+    import paho.mqtt.publish as publish
+except ImportError:
+    
+    import os
+    import inspect
+    cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"../src")))
+    if cmd_subfolder not in sys.path:
+        sys.path.insert(0, cmd_subfolder)
+    import paho.mqtt.publish as publish
+
+
+while 1:
+
+	button = grove.GroveButton(3)
+	myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
+	myLcd.setCursor(1,0)
+	myLcd.write('              ')
+	myLcd.setCursor(0,1)
+	myLcd.write('Hallo          ')
+
+
+        print ("press button")
+        time.sleep(1)
+        a=button.value()
+	if a>0:
+		def main():
+    		    x = mraa.Gpio(4)
+		    x.dir(mraa.DIR_OUT)
+		    x.write(1)
+		    time.sleep (0.5)
+		    x.write(0)
+###################################################################
+
+		    temp = grove.GroveTemp(0)
+		    s=1
+		    print ("s=",s)
+	
+		    for i in range(0, 120):
+		    	ur = temp.value()-15
+		    	if abs(ur)>8.1:
+			   s+=1
+		    	print("%d " % (ur))   	
+		        time.sleep(0.1)
+		    del temp
+		    print ("s=", s)
+		    publish.single("/heart",s,hostname="192.168.1.111")
+#################################################################
+		    myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
+		    myLcd.setCursor(1,0)
+		    myLcd.write('breathe  ')
+		    myLcd.setCursor(0,1) 
+		    myLcd.write('on the sensor  ')
+
+		    temp = grove.GroveTemp(2)
+		    for i in range(0, 5):
+		        al = (temp.value()+22)
+		        time.sleep(1)
+		    publish.single("/alcohol",al,hostname="192.168.1.111")
+
+		    myLcd.setCursor(1,0)
+		    myLcd.write('              ')
+		    myLcd.setCursor(0,1)
+		    myLcd.write('thank          ')
+
+###################################################################
+		    rt=random.randint(120,150) # example data
+		    rt1=random.randint(70,90) #example data
+		    mass=random.randint(70,100) #example data
+		    hig=random.randint(150,190)	
+
+                    x = mraa.Gpio(4)
+                    x.dir(mraa.DIR_OUT)
+                    x.write(1)
+                    time.sleep (0.5)
+                    x.write(0)
+		    bmi=mass/((hig/100)*(hig/100))	
+		    time.sleep(30)
+				
+		    publish.single("/pressure",str(rt)+ "/"+ str(rt1) ,hostname="192.168.1.111")
+		    publish.single("/height",hig,hostname="192.168.1.111")
+		    publish.single("/weight",mass,hostname="192.168.1.111")
+		    publish.single("/bmi",bmi,hostname="192.168.1.111")
+	
+		    myLcd.setCursor(1,0)
+		    myLcd.write(str(rt)+"/"+str(rt1)+" davlen")
+    
+		    publish.single("/temp",37.1,hostname="192.168.1.111")
+		    time.sleep(10)
+
+			
+		if __name__ == '__main__':
+		    main()
+
+
+del button
+
+
